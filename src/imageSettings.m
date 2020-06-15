@@ -43,13 +43,14 @@ classdef imageSettings
         % Specify if simple median filtering should be applied on RGB image
         % to remove salt-pepper noise from demosaiced image
         
-        % Automatic classification
-        autoClassification = false;
+        % Auto mode
+        autoMode = false;
         % The classification of pixels into sky, buildings, stems and
         % foliage is based on automatic thresholding. These thresholds can
         % be manually adjusted if corrections are needed. Use this setting
-        % to skip the manual adjustments (recommended for testing only).
-        
+        % to skip the manual GUI corrections and set default values
+        % (recommended for testing only).
+
     end
     
     methods
@@ -88,32 +89,31 @@ classdef imageSettings
         
         function obj = set.fisheye(obj,fisheye)
             if ~islogical(fisheye)
-                error('Fisheye setting can be only true or false')
+                error('Fisheye setting could be only true or false')
             else
                 obj.fisheye = fisheye;
             end
         end
         function obj = set.vignCorrection(obj,vignCorrection)
             if ~islogical(vignCorrection)
-                error('Vignetting correction setting can be only true or false')
+                error('Vignetting correction setting could be only true or false')
             else
                 obj.vignCorrection = vignCorrection;
             end
         end
         function obj = set.medianFiltering(obj,medianFiltering)
             if ~islogical(medianFiltering)
-                error('Median filtering setting can be only true or false')
+                error('Median filtering setting could be only true or false')
             else
                 obj.medianFiltering = medianFiltering;
             end
         end
-        function obj = set.autoClassification(obj,autoClassification)
-            if ~islogical(autoClassification)
-                error('Automatic classification setting can be only true or false')
+        function obj = set.autoMode(obj,autoMode)
+            if ~islogical(autoMode)
+                error('Auto Mode filtering setting could be only true or false')
             else
-                obj.autoClassification = autoClassification;
+                obj.autoMode = autoMode;
             end
         end
     end
 end
-

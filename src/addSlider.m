@@ -84,12 +84,19 @@ button.Callback = @(h, ed) button_callback(h);
 
 f.WindowState = 'maximized';
 drawnow;
+pause(1);
 ax=gca;
 ax.Position(4)=ax.Position(4)-0.05;
-welcome.Position=[f.Position(3)/4,f.Position(4)-60,f.Position(3)/2,60];
+welcome.Position=[f.Position(3)/4,f.Position(4)-80,f.Position(3)/2,80];
 
 uiwait();
-[~,mask]=redrawFused(sharedProperties);
+
+ax = gca;
+list = ax.Children;
+substractivePolygons = findobj(list, 'Type', 'images.roi.polygon', 'Color', [1, 0, 0]);
+additivePolygons = findobj(list, 'Type', 'images.roi.polygon', 'Color', [0, 1, 0]);
+[~, mask] = fuseImage(sharedProperties.data.settings, substractivePolygons, additivePolygons);
+
 close(f);
 end
 
@@ -100,7 +107,7 @@ data.settings.threshold=threshold;
 data.button.Value=0;
 data.text.String=num2str(threshold);
 hObject.UserData.data=data;
-[data.fused,data.mask]=redrawFused(hObject.UserData);
+[data.fused]=redrawFused(hObject.UserData);
 hObject.UserData.data=data;
 end
 
@@ -137,47 +144,23 @@ redrawFused(hObject.UserData);
 uiwait();
 end
 
-function [fused,mask]=redrawFused(userData)
+function fused = redrawFused(userData)
+f = gcf;
+f.Pointer = 'watch';
 data=userData.data;
 ax = gca;
 list = ax.Children;
 
-polygons = findobj(list, 'Type', 'images.roi.polygon', 'Color', [1, 0, 0]);
-if isempty(polygons)
-    substractiveMask=0;
-else
-    substractiveMask = arrayfun(@createMask,polygons, 'uni', false);
-    substractiveMask = any(permute(reshape(cell2mat(substractiveMask), [size(substractiveMask{1},1),length(substractiveMask),size(substractiveMask{1},2)]), [1,3,2]),3);
-end
-
-polygons = findobj(list, 'Type', 'images.roi.polygon', 'Color', [0, 1, 0]);
-if isempty(polygons)
-    additiveMask=0;
-else
-    additiveMask = arrayfun(@createMask,polygons, 'uni', false);
-    additiveMask = any(permute(reshape(cell2mat(additiveMask), [size(additiveMask{1},1),length(additiveMask),size(additiveMask{1},2)]), [1,3,2]),3);
-end
-
-
-BW=imbinarize(data.settings.thresholdImage, data.settings.threshold);
-if ~isempty(data.settings.gapThreshold)
-    cc=bwconncomp(data.settings.thresholdImage>0);
-    numPixels = cellfun(@numel,cc.PixelIdxList);
-    idx = find(numPixels<im2uint16(graythresh(uint16(numPixels))));
-    idx=cell2mat(arrayfun(@(v) reshape(cc.PixelIdxList{v}, 1,[]), idx, 'uni', false));
-    BW(idx) = 1;
-end
-if ~isempty(data.settings.erodeMaskSize)
-    BW=imerode(BW, ones(data.settings.erodeMaskSize));
-end
-mask=BW&~data.settings.alreadyClassified&~substractiveMask|additiveMask;
-fused = imfuse(mask, data.settings.baseImage, 'method', 'blend');
+substractivePolygons = findobj(list, 'Type', 'images.roi.polygon', 'Color', [1, 0, 0]);
+additivePolygons = findobj(list, 'Type', 'images.roi.polygon', 'Color', [0, 1, 0]);
+[fused, ~] = fuseImage(data.settings, substractivePolygons, additivePolygons);
 
 im=findobj(list, 'Type', 'image');
 im.CData=fused;
 data.fused=fused;
-data.mask=mask;
 userData.data=data;
+drawnow;
+f.Pointer = 'arrow';
 end
 
 function deleteAction(h, userData)

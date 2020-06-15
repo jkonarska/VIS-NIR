@@ -72,7 +72,7 @@ for i=1:size(fileList,1)
     ndvi = ndviCalc(VIS, NIR);
     
     %% 6. Classify pixels into sky, buildings, leaves and branches
-    [classifiedImage, classColorMap] = classifyPixels(image, imageDisp, VIS, NIR, ndvi);
+    [classifiedImage, classColorMap] = classifyPixels(image, imageDisp, VIS, NIR, ndvi, settings.autoMode);
     
     %% 7. Save the output figure
     imwrite(classifiedImage, classColorMap, outputFilePath, 'Compression', 'lzw');

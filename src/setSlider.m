@@ -5,7 +5,7 @@ classdef setSlider
         thresholdImage;
         welcomeMessage;
         erodeMaskSize;
-        gapThreshold;
+        fillGaps;
         alreadyClassified=0;
         title;
         buttonLabels;
@@ -34,8 +34,8 @@ classdef setSlider
             end
         end
         function obj = set.welcomeMessage(obj,welcomeMessage)
-            if ~ischar(welcomeMessage)
-                error('welcomeMessage must be a char array')
+            if ~isa(welcomeMessage,'cell') || ~ischar([welcomeMessage{:}])
+                error('welcomeMessage must be a cell array of chars')
             else
                 obj.welcomeMessage = welcomeMessage;
             end
@@ -49,11 +49,11 @@ classdef setSlider
             end
         end
             
-        function obj = set.gapThreshold(obj,gapThreshold)
-            if any([mod(gapThreshold,1) ~= 0,0]) || ~isnumeric(gapThreshold) || numel(gapThreshold)>1
-                error('gapThreshold must be an integer value')
+        function obj = set.fillGaps(obj,fillGaps)
+            if ~islogical(fillGaps)
+                error('fillGaps must be true or false')
             else
-                obj.gapThreshold = gapThreshold;
+                obj.fillGaps = fillGaps;
             end
         end
         function obj = set.alreadyClassified(obj,alreadyClassified)

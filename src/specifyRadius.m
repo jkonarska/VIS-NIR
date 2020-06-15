@@ -1,6 +1,10 @@
-function [radius,centreX,centreY] = specifyRadius(image)
+function [radius,centreX,centreY] = specifyRadius(image, isDng)
 % Function to specify the circular image area
+if isDng
 threshold = 0.2;
+else
+    threshold = 0.2^(1.0/3.2); %correct threshold by gamma value
+end
 blurMaskSize = 3;
 
 [height, width, ~]=size(image);

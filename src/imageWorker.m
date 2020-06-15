@@ -36,7 +36,7 @@ else
     end
     if ~exist('imageSize', 'var') || all(imageSize~=size(image)) || ~exist('lensModelForRadius', 'var') || ~isequal(lensModelForRadius,lensModel)
         % If its not saved or size differs, ask for user input
-        [imageRadius,centreX,centreY] = specifyRadius(image);
+        [imageRadius,centreX,centreY] = specifyRadius(image, isDng);
         imageSize = size(image);
         % Save the settings for the remaining images in the folder
         lensModelForRadius=lensModel;
