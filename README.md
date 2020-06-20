@@ -1,5 +1,5 @@
 # VIS-NIR
-A Matlab 2018b code for importing dual-wavelength (VIS-NIR) hemispherical photographs and detecting buildings and vegetation
+A MATLAB code for importing dual-wavelength (VIS-NIR) hemispherical photographs and detecting buildings and vegetation
 
 ## Installation
 The code requires MATLAB v2018b or later, with Image Processing Toolbox installed.  
